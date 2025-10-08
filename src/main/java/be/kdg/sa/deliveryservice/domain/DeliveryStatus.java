@@ -6,10 +6,11 @@ import lombok.Getter;
 @Getter
 public enum DeliveryStatus {
     AVAILABLE("We zoeken een coerier."),
-    PENDING("We zoeken een coerier"),
     ACCEPTED("We hebben een coerier gevonden, restaurant is bezig met voorbereiding van uw order."),
+    PENDING("wait for pick up"),
     IN_ROUTE("De coerier is onderweg met je bestelling."),
-    DELIVERED("Je eten is er");
+    DELIVERED("Je eten is er"),
+    CANCELLED("De order is gecancelled.");
 
     private final String text;
 

@@ -1,0 +1,38 @@
+GET http://localhost:8080/api/delivery/available
+Accept: application/json
+
+###Alles loopt juist
+@id1 = cccccccc-cccc-cccc-cccc-cccccccccccc
+@courierId1 = 11111111-4444-4444-4444-111111111111
+
+POST localhost:8080/api/delivery/{{id1}}/claim/{{courierId1}}
+Accept: application/json
+
+
+###Delivery is all bezig
+@id2 = 44444444-5555-6666-7777-888888888888
+
+POST localhost:8080/api/delivery/{{id2}}/claim/{{courierId1}}
+Accept: application/json
+
+
+###Courier heeft al een delivery
+@courierId3 = 11111111-1111-1111-1111-111111111111
+
+POST localhost:8080/api/delivery/{{id1}}/claim/{{courierId3}}
+Accept: application/json
+
+
+###Alles loopt juist (heeft een gecancellelde)
+@id4 = 11111111-2222-3333-4444-555555555555
+@courierId4 = 11111111-3333-3333-3333-111111111111
+
+POST localhost:8080/api/delivery/{{id4}}/claim/{{courierId4}}
+Accept: application/json
+
+###Alles loopt juist (heeft een deliverd)
+@id5 = ffffffff-ffff-ffff-ffff-ffffffffffff
+@courierId5 = 11111111-2222-2222-2222-111111111111
+
+POST localhost:8080/api/delivery/{{id5}}/claim/{{courierId5}}
+Accept: application/json
