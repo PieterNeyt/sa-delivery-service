@@ -30,4 +30,10 @@ public class DeliveryController {
         Delivery delivery = deliveryService.claimDelivery(id,courierId);
         return ResponseEntity.ok(DeliveryDto.from(delivery));
     }
+
+    @PutMapping("/{id}/claim/{courierId}/cancel")
+    public ResponseEntity<DeliveryDto> CancelDeliveryClaim(@PathVariable UUID id, @PathVariable UUID courierId) {
+        Delivery delivery = deliveryService.cancelClaimDelivery(id,courierId);
+        return ResponseEntity.ok(DeliveryDto.from(delivery));
+    }
 }

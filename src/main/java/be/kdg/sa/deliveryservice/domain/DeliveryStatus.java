@@ -7,7 +7,7 @@ import lombok.Getter;
 public enum DeliveryStatus {
     AVAILABLE("We zoeken een coerier."),
     ACCEPTED("We hebben een coerier gevonden, restaurant is bezig met voorbereiding van uw order."),
-    PENDING("wait for pick up"),
+    PENDING_PICKUP("wait for pick up"),
     IN_ROUTE("De coerier is onderweg met je bestelling."),
     DELIVERED("Je eten is er"),
     CANCELLED("De order is gecancelled.");

@@ -44,7 +44,7 @@ public class JpaDeliveryEntity {
     public static JpaDeliveryEntity fromDomain(Delivery delivery) {
         return new JpaDeliveryEntity(delivery.getDeliveryId().id(),
                 delivery.getOrderId().id(),
-                delivery.getCourierId().id(),
+                delivery.getCourierId() != null ? delivery.getCourierId().id() : null,
                 delivery.getDeliveryStatus(),
                 delivery.getStartDelivery(),
                 delivery.getEndDelivery());

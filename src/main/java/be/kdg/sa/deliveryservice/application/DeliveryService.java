@@ -44,4 +44,16 @@ public class DeliveryService {
         deliveryRepository.save(delivery);
         return delivery;
     }
+
+    public Delivery cancelClaimDelivery(UUID id, UUID courierId) {
+        Delivery delivery = deliveryRepository.findById(id)
+                .orElseThrow();
+
+        if (!delivery.getCourierId().id().equals(courierId))
+            throw new IllegalStateException("Delivery doesn't belong to courier");
+
+        delivery.removeCourier();
+        deliveryRepository.save(delivery);
+        return delivery;
+    }
 }

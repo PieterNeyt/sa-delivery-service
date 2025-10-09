@@ -67,4 +67,13 @@ public class Delivery {
     public void StartDelivery() {
         this.startDelivery = Date.from(Instant.now());
     }
+
+    public void removeCourier() {
+        if(deliveryStatus != DeliveryStatus.ACCEPTED)
+            throw new IllegalStateException("Delivery is already ready for pick, you have to finish the delivery");
+
+        this.courierId = null;
+        this.startDelivery = null;
+        changeDeliveryStatus(DeliveryStatus.AVAILABLE);
+    }
 }
