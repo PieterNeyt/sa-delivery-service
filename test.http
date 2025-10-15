@@ -1,19 +1,36 @@
-GET http://localhost:8080/api/delivery/available
+### Eerst token ophalen
+POST http://localhost:8180/realms/keepdishesgoing/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=backend-client&client_secret=NHhC580gogEpJ5K9fqsiyLiqF4VpqTKE&username=courier&password=password&grant_type=password&scope=openid
+
+> {% client.global.set("access_token", response.body.access_token); %}
+
+#####
+GET http://localhost:9091/api/delivery/available
 Accept: application/json
 
 ###Alles loopt juist
 @id1 = cccccccc-cccc-cccc-cccc-cccccccccccc
-@courierId1 = 11111111-4444-4444-4444-111111111111
 
-POST localhost:8080/api/delivery/{{id1}}/claim/{{courierId1}}
+POST localhost:9091/api/delivery/{{id1}}/claim
 Accept: application/json
+Authorization: Bearer {{access_token}}
 
 ###Cancel order loopt juist
-PUT localhost:8080/api/delivery/{{id1}}/claim/{{courierId1}}/cancel
+PUT localhost:9091/api/delivery/{{id1}}/claim/cancel
 Accept: application/json
+Authorization: Bearer {{access_token}}
+
+###Ophalen token 2e courier
+POST http://localhost:8180/realms/keepdishesgoing/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=backend-client&client_secret=NHhC580gogEpJ5K9fqsiyLiqF4VpqTKE&username=courier&password=password&grant_type=password&scope=openid
+
+> {% client.global.set("access_token2", response.body.access_token); %}
 
 ###Cancel order loopt fout; niet zijn delivery
-@courierId2 = 11111111-3333-3333-3333-111111111111
-
-PUT localhost:8080/api/delivery/{{id1}}/claim/{{courierId2}}/cancel
+PUT localhost:9091/api/delivery/{{id1}}/claim/cancel
 Accept: application/json
+Authorization: Bearer {{access_token2}}
