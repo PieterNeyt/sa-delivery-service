@@ -3,12 +3,14 @@ package be.kdg.sa.deliveryservice.domain;
 import lombok.Getter;
 import lombok.ToString;
 import org.jmolecules.ddd.annotation.Entity;
+import org.jmolecules.ddd.annotation.Identity;
 
 
 @Getter
 @ToString
 @Entity
 public class Courier {
+    @Identity
     public CourierId id;
 
     public String firstName;

@@ -4,6 +4,7 @@ package be.kdg.sa.deliveryservice.domain;
 import lombok.Getter;
 import lombok.ToString;
 import org.jmolecules.ddd.annotation.AggregateRoot;
+import org.jmolecules.ddd.annotation.Identity;
 import org.springframework.util.Assert;
 
 import java.time.Instant;
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 @ToString
 @AggregateRoot
 public class Delivery {
+    @Identity
     private DeliveryId deliveryId;
     private OrderId orderId;
     private CourierId courierId;
