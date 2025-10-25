@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class Delivery {
     @Identity
     private DeliveryId deliveryId;
-    private OrderId orderId;
+    private final OrderId orderId;
     private CourierId courierId;
 
     private Date startDelivery;
@@ -56,7 +56,6 @@ public class Delivery {
     }
 
     public void assignCourier(CourierId courierId) {
-        Assert.notNull(courierId, "Courier must not be null");
         this.courierId = courierId;
     }
 

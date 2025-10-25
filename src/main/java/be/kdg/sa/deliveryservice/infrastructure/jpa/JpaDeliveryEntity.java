@@ -52,7 +52,7 @@ public class JpaDeliveryEntity {
     public Delivery toDomain() {
         CourierId courierId1 = courierId==null ?
                 null:new CourierId(courierId);
-        Delivery delivery = new Delivery(
+        return new Delivery(
                 new DeliveryId(id),
                 new OrderId(orderId),
                 courierId1,
@@ -60,6 +60,5 @@ public class JpaDeliveryEntity {
                 endDelivery,
                 deliveryStatus
         );
-        return delivery;
     }
 }

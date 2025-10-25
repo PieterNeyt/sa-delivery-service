@@ -94,7 +94,7 @@ public class DeliveryService {
         List<Delivery> deliveries = deliveryRepository.findCompletedDeliveriesByCourier(courierId);
         List<Payout> payouts = deliveryRepository.findPayoutsByCourier(courierId);
 
-        // Maak map voor snelle lookup van payout per deliveryId
+
         Map<UUID, Double> payoutMap = payouts.stream()
                 .collect(Collectors.toMap(p -> p.getDeliveryId().id(), Payout::getAmount));
 
