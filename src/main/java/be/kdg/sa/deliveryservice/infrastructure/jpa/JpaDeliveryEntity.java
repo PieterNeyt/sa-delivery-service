@@ -1,6 +1,5 @@
 package be.kdg.sa.deliveryservice.infrastructure.jpa;
 
-import be.kdg.sa.deliveryservice.api.CourierDto;
 import be.kdg.sa.deliveryservice.domain.*;
 import jakarta.persistence.*;
 import lombok.Getter;

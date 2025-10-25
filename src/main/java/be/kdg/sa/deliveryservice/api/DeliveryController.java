@@ -1,5 +1,7 @@
 package be.kdg.sa.deliveryservice.api;
 
+import be.kdg.sa.deliveryservice.api.dto.CourierEarningsDto;
+import be.kdg.sa.deliveryservice.api.dto.DeliveryDto;
 import be.kdg.sa.deliveryservice.application.DeliveryService;
 import be.kdg.sa.deliveryservice.domain.Delivery;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +40,25 @@ public class DeliveryController {
         return ResponseEntity.ok(DeliveryDto.from(delivery));
     }
     @PreAuthorize("hasAuthority('courier')")
+    @PostMapping("/{id}/completeDelivery")
+    public ResponseEntity<DeliveryDto> completeDelivery(@PathVariable UUID id, @AuthenticationPrincipal Jwt token) {
+        Delivery delivery = deliveryService.completeDelivery(id,getIdFromToken(token));
+        return ResponseEntity.ok(DeliveryDto.from(delivery));
+    }
+    @PreAuthorize("hasAuthority('courier')")
     @PutMapping("/{id}/claim/cancel")
     public ResponseEntity<DeliveryDto> CancelDeliveryClaim(@PathVariable UUID id, @AuthenticationPrincipal Jwt token) {
         Delivery delivery = deliveryService.cancelClaimDelivery(id,getIdFromToken(token));
         return ResponseEntity.ok(DeliveryDto.from(delivery));
     }
+    @PreAuthorize("hasAuthority('courier')")
+    @GetMapping("/completed")
+    public ResponseEntity<CourierEarningsDto> getCompletedDeliveries(@AuthenticationPrincipal Jwt token) {
+        UUID courierId = getIdFromToken(token);
+        CourierEarningsDto dto = deliveryService.getCompletedDeliveriesAndPayments(courierId);
+        return ResponseEntity.ok(dto);
+    }
+
+
+
 }

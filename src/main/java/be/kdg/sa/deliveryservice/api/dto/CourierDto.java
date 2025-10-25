@@ -1,4 +1,4 @@
-package be.kdg.sa.deliveryservice.api;
+package be.kdg.sa.deliveryservice.api.dto;
 
 import be.kdg.sa.deliveryservice.domain.Courier;
 

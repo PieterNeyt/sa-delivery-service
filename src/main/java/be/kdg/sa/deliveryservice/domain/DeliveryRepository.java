@@ -10,4 +10,8 @@ public interface DeliveryRepository {
     Optional<Delivery> findById(UUID id);
 
     void save(Delivery delivery);
+    void savePayout(Payout payout);
+    List<Delivery> findCompletedDeliveriesByCourier(UUID courierId);
+    List<Payout> findPayoutsByCourier(UUID courierId);
+
 }

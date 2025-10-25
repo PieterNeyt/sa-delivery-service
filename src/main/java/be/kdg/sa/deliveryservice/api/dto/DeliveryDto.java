@@ -1,7 +1,5 @@
-package be.kdg.sa.deliveryservice.api;
+package be.kdg.sa.deliveryservice.api.dto;
 
-import be.kdg.sa.deliveryservice.domain.Courier;
-import be.kdg.sa.deliveryservice.domain.CourierId;
 import be.kdg.sa.deliveryservice.domain.Delivery;
 import be.kdg.sa.deliveryservice.domain.DeliveryStatus;
 

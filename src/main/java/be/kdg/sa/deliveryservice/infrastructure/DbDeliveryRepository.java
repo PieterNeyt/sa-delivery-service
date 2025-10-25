@@ -3,8 +3,11 @@ package be.kdg.sa.deliveryservice.infrastructure;
 import be.kdg.sa.deliveryservice.domain.Delivery;
 import be.kdg.sa.deliveryservice.domain.DeliveryRepository;
 import be.kdg.sa.deliveryservice.domain.DeliveryStatus;
+import be.kdg.sa.deliveryservice.domain.Payout;
 import be.kdg.sa.deliveryservice.infrastructure.jpa.JpaDeliveryEntity;
 import be.kdg.sa.deliveryservice.infrastructure.jpa.JpaDeliveryRepository;
+import be.kdg.sa.deliveryservice.infrastructure.jpa.JpaPayoutEntity;
+import be.kdg.sa.deliveryservice.infrastructure.jpa.JpaPayoutRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,9 +17,11 @@ import java.util.UUID;
 @Repository
 public class DbDeliveryRepository implements DeliveryRepository {
     private final JpaDeliveryRepository jpaDeliveryRepository;
+    private final JpaPayoutRepository jpaPayoutRepository;
 
-    public DbDeliveryRepository(JpaDeliveryRepository jpaDeliveryRepository) {
+    public DbDeliveryRepository(JpaDeliveryRepository jpaDeliveryRepository, JpaPayoutRepository jpaPayoutRepository) {
         this.jpaDeliveryRepository = jpaDeliveryRepository;
+        this.jpaPayoutRepository = jpaPayoutRepository;
     }
 
     @Override
@@ -36,4 +41,28 @@ public class DbDeliveryRepository implements DeliveryRepository {
     public void save(Delivery delivery) {
         this.jpaDeliveryRepository.save(JpaDeliveryEntity.fromDomain(delivery));
     }
+
+    @Override
+    public void savePayout(Payout payout) {
+        this.jpaPayoutRepository.save(JpaPayoutEntity.fromDomain(payout));
+    }
+
+    @Override
+    public List<Delivery> findCompletedDeliveriesByCourier(UUID courierId) {
+        return jpaDeliveryRepository.findAll().stream()
+                .filter(d -> d.getDeliveryStatus() == DeliveryStatus.DELIVERED)
+                .filter(d -> d.getCourierId() != null && d.getCourierId().equals(courierId))
+                .map(JpaDeliveryEntity::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Payout> findPayoutsByCourier(UUID courierId) {
+        return jpaPayoutRepository.findAll().stream()
+                .filter(p -> p.getCourierId().equals(courierId))
+                .map(JpaPayoutEntity::toDomain)
+                .toList();
+    }
+
+
 }

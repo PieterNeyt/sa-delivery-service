@@ -1,3 +1,12 @@
+#### Eerst token ophalen
+#POST http://localhost:8180/realms/keepdishesgoing/protocol/openid-connect/token
+#Content-Type: application/x-www-form-urlencoded
+#
+#client_id=backend-client&client_secret=NHhC580gogEpJ5K9fqsiyLiqF4VpqTKE&username=courier&password=password&grant_type=password&scope=openid
+#
+#> {% client.global.set("access_token", response.body.access_token); %}
+#
+######
 ### Eerst token ophalen
 POST http://localhost:8180/realms/keepdishesgoing/protocol/openid-connect/token
 Content-Type: application/x-www-form-urlencoded
@@ -7,18 +16,19 @@ client_id=backend-client&client_secret=NHhC580gogEpJ5K9fqsiyLiqF4VpqTKE&username
 > {% client.global.set("access_token", response.body.access_token); %}
 
 #####
-GET http://localhost:9091/api/delivery/available
+
+GET http://localhost:7070/api/delivery/available
 Accept: application/json
 
 ###Alles loopt juist
-@id1 = cccccccc-cccc-cccc-cccc-cccccccccccc
+@id1 = 99160d86-d7d6-49f9-8720-4bb25406dd51
 
-POST localhost:9091/api/delivery/{{id1}}/claim
+POST http://localhost:7070/api/delivery/{{id1}}/claim
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
 ###Cancel order loopt juist
-PUT localhost:9091/api/delivery/{{id1}}/claim/cancel
+PUT localhost:7070/api/delivery/{{id1}}/claim/cancel
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
@@ -31,6 +41,17 @@ client_id=backend-client&client_secret=NHhC580gogEpJ5K9fqsiyLiqF4VpqTKE&username
 > {% client.global.set("access_token2", response.body.access_token); %}
 
 ###Cancel order loopt fout; niet zijn delivery
-PUT localhost:9091/api/delivery/{{id1}}/claim/cancel
+PUT localhost:7070/api/delivery/{{id1}}/claim/cancel
 Accept: application/json
 Authorization: Bearer {{access_token2}}
+
+### Complete delivery (uitbetaling berekenen + crediteren)
+POST http://localhost:7070/api/delivery/{{id1}}/completeDelivery
+Accept: application/json
+Authorization: Bearer {{access_token}}
+
+### Haal lijst afgeronde deliveries en bijhorende betalingen op met doorlopend totaal
+GET http://localhost:7070/api/delivery/completed
+Authorization: Bearer {{access_token}}
+Accept: application/json
+

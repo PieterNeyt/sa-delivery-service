@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.ToString;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import java.time.Instant;
@@ -24,9 +25,11 @@ public class Delivery {
     private Date endDelivery;
     private DeliveryStatus deliveryStatus;
 
-    public Delivery() {
+    public Delivery(OrderId orderId) {
         this.deliveryId = DeliveryId.create();
         this.deliveryStatus = DeliveryStatus.AVAILABLE;
+        this.orderId = orderId;
+
     }
 
     public Delivery(DeliveryId deliveryId, OrderId orderId,CourierId courierId, Date startDelivery, Date endDelivery, DeliveryStatus deliveryStatus) {
@@ -39,20 +42,16 @@ public class Delivery {
     }
 
 
-    public double calculateCourierPay() {
-        double basicCompansation = 3.50;
-        double perMinuteExtra = 0.30;
+    private double calculateCourierPay(double basicCompansation, double perMinuteExtra){
+
         this.endDelivery = Date.from(Instant.now());
 
-        //calculate length of delivery in minutes
-        long deliveryTime = startDelivery.getTime() - endDelivery.getTime();
+        long deliveryTime = endDelivery.getTime() - startDelivery.getTime();
         long deliveryTimeInMinutes = TimeUnit.MILLISECONDS.toMinutes(deliveryTime);
 
-        //check if Delivery is more then 5 minutes else return basicCompansation
         if(deliveryTimeInMinutes <= 5)
             return basicCompansation;
 
-        //calculate total cost (3.50 + (0.50 * total minuten of delivery)
         return basicCompansation + (perMinuteExtra * deliveryTimeInMinutes);
     }
 
@@ -61,21 +60,31 @@ public class Delivery {
         this.courierId = courierId;
     }
 
-    public void changeDeliveryStatus(DeliveryStatus deliveryStatus) {
-        Assert.notNull(deliveryStatus, "Courier must not be null");
-        this.deliveryStatus = deliveryStatus;
+
+    public void acceptDelivery() {
+        this.deliveryStatus= DeliveryStatus.ACCEPTED;
     }
 
     public void StartDelivery() {
+        this.deliveryStatus= DeliveryStatus.IN_ROUTE;
         this.startDelivery = Date.from(Instant.now());
     }
 
-    public void removeCourier() {
+    public Payout completeDelivery(double basicCompensation, double perMinuteExtra) {
+        this.deliveryStatus = DeliveryStatus.DELIVERED;
+        this.endDelivery = Date.from(Instant.now());
+        double amount = calculateCourierPay(basicCompensation, perMinuteExtra);
+
+        return new Payout(this.courierId, this.deliveryId, amount);
+    }
+
+    public void cancelDelivery() {
         if(deliveryStatus != DeliveryStatus.ACCEPTED)
             throw new IllegalStateException("Delivery is already ready for pick, you have to finish the delivery");
 
         this.courierId = null;
         this.startDelivery = null;
-        changeDeliveryStatus(DeliveryStatus.AVAILABLE);
+        this.deliveryStatus= DeliveryStatus.AVAILABLE;
     }
+
 }
