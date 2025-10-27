@@ -16,11 +16,11 @@ public class RestaurantHandler {
         this.deliveryService = deliveryService;
     }
 
-    @RabbitListener(queues = RabbitMQTopology.DELIVERY_ACCEPT_QUEUE)
+    @RabbitListener(queues = {"${rabbit.delivery.accept.queue}"})
     public void receiveAcceptedOrderResponse(RestaurantResponse msg) {
         deliveryService.processAcceptedOrder(msg);
     }
-    @RabbitListener(queues = RabbitMQTopology.DELIVERY_READY_QUEUE)
+    @RabbitListener(queues = {"${rabbit.delivery.ready.queue}"})
     public void receiveReadyOrderResponse(RestaurantResponse msg) {
         deliveryService.processReadyOrder(msg);
     }

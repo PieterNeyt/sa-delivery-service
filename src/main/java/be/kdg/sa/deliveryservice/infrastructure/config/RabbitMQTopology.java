@@ -1,16 +1,24 @@
 package be.kdg.sa.deliveryservice.infrastructure.config;
 
 import org.springframework.amqp.core.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQTopology {
-    public static final String RESTAURANT_RESPONSE_EXCHANGE_NAME = "restaurant-response-exchange";
-    public static final String DELIVERY_RESPONSE_EXCHANGE_NAME = "delivery-response-exchange";
 
-    public static final String DELIVERY_ACCEPT_QUEUE = "delivery-accept-queue";
-    public static final String DELIVERY_READY_QUEUE = "delivery-ready-queue";
+    @Value("${rabbit.restaurant.response.exchange}")
+    public String RESTAURANT_RESPONSE_EXCHANGE_NAME;
+
+    @Value("${rabbit.delivery.response.exchange}")
+    public String DELIVERY_RESPONSE_EXCHANGE_NAME;
+
+    @Value("${rabbit.delivery.accept.queue}")
+    public String DELIVERY_ACCEPT_QUEUE;
+
+    @Value("${rabbit.delivery.ready.queue}")
+    public String DELIVERY_READY_QUEUE;
 
     @Bean
     TopicExchange restaurantResponseExchange() {
