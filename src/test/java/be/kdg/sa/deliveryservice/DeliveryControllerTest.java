@@ -15,7 +15,11 @@ import be.kdg.sa.deliveryservice.domain.delivery.DeliveryStatus;
 import be.kdg.sa.deliveryservice.domain.delivery.OrderId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
 
@@ -27,16 +31,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class DeliveryControllerTest {
 
+    @Mock
     private DeliveryService deliveryService;
-    private DeliveryController controller;
 
-    @BeforeEach
-    void setUp() {
-        deliveryService = mock(DeliveryService.class);
-        controller = new DeliveryController(deliveryService);
-    }
+    @InjectMocks
+    private DeliveryController controller;
 
     @Test
     void getAllAvailableDeliveries_ReturnsListOfDeliveries() {
