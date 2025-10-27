@@ -21,7 +21,7 @@ GET http://localhost:7070/api/delivery/available
 Accept: application/json
 
 ###Alles loopt juist
-@id1 = 99160d86-d7d6-49f9-8720-4bb25406dd51
+@id1 = 20a72e49-f5ad-4ee5-9728-ee3aa0e2d0d6
 
 POST http://localhost:7070/api/delivery/{{id1}}/claim
 Accept: application/json
@@ -44,6 +44,11 @@ client_id=backend-client&client_secret=NHhC580gogEpJ5K9fqsiyLiqF4VpqTKE&username
 PUT localhost:7070/api/delivery/{{id1}}/claim/cancel
 Accept: application/json
 Authorization: Bearer {{access_token2}}
+
+### Delivery ophalen
+POST http://localhost:7070/api/delivery/{{id1}}/getDelivery
+Accept: application/json
+Authorization: Bearer {{access_token}}
 
 ### Complete delivery (uitbetaling berekenen + crediteren)
 POST http://localhost:7070/api/delivery/{{id1}}/completeDelivery

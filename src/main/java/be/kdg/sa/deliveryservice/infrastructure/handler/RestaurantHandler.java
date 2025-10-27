@@ -22,6 +22,6 @@ public class RestaurantHandler {
     }
     @RabbitListener(queues = RabbitMQTopology.DELIVERY_READY_QUEUE)
     public void receiveReadyOrderResponse(RestaurantResponse msg) {
-        log.info("Received Order ready Message: {}", msg);
+        deliveryService.processReadyOrder(msg);
     }
 }

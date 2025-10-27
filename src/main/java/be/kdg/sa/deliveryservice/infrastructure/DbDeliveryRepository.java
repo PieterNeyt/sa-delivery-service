@@ -38,6 +38,15 @@ public class DbDeliveryRepository implements DeliveryRepository {
     }
 
     @Override
+    public Optional<Delivery> findByOrderId(UUID orderId) {
+        return this.jpaDeliveryRepository.findAll().stream()
+                .filter(d -> d.getOrderId().equals(orderId))
+                .findFirst()
+                .map(JpaDeliveryEntity::toDomain);
+    }
+
+
+    @Override
     public void save(Delivery delivery) {
         this.jpaDeliveryRepository.save(JpaDeliveryEntity.fromDomain(delivery));
     }
@@ -50,7 +59,7 @@ public class DbDeliveryRepository implements DeliveryRepository {
     @Override
     public List<Delivery> findCompletedDeliveriesByCourier(UUID courierId) {
         return jpaDeliveryRepository.findAll().stream()
-                .filter(d -> d.getDeliveryStatus() == DeliveryStatus.DELIVERED)
+                .filter(d -> d.getDeliveryStatus() == DeliveryStatus.DELIVERD)
                 .filter(d -> d.getCourierId() != null && d.getCourierId().equals(courierId))
                 .map(JpaDeliveryEntity::toDomain)
                 .toList();

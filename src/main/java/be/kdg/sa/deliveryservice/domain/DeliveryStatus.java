@@ -8,8 +8,8 @@ public enum DeliveryStatus {
     AVAILABLE("We zoeken een coerier."),
     ACCEPTED("We hebben een coerier gevonden, restaurant is bezig met voorbereiding van uw order."),
     PENDING_PICKUP("wait for pick up"),
-    IN_ROUTE("De coerier is onderweg met je bestelling."),
-    DELIVERED("Je eten is er"),
+    PICKED_UP("De coerier is onderweg met je bestelling."),
+    DELIVERD("Je eten is er"),
     CANCELLED("De order is gecancelled.");
 
     private final String text;

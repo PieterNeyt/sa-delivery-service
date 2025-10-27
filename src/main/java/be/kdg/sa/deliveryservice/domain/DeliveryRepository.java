@@ -8,6 +8,7 @@ public interface DeliveryRepository {
     List<Delivery> findAllAvailableDeliveries();
 
     Optional<Delivery> findById(UUID id);
+    Optional<Delivery> findByOrderId(UUID orderId);
 
     void save(Delivery delivery);
     void savePayout(Payout payout);

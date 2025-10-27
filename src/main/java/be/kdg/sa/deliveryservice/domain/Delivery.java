@@ -64,13 +64,16 @@ public class Delivery {
         this.deliveryStatus= DeliveryStatus.ACCEPTED;
     }
 
-    public void StartDelivery() {
-        this.deliveryStatus= DeliveryStatus.IN_ROUTE;
+    public void readyForPickup() {
+        this.deliveryStatus= DeliveryStatus.PENDING_PICKUP;
+    }
+    public void pickup() {
+        this.deliveryStatus= DeliveryStatus.PICKED_UP;
         this.startDelivery = Date.from(Instant.now());
     }
 
     public Payout completeDelivery(double basicCompensation, double perMinuteExtra) {
-        this.deliveryStatus = DeliveryStatus.DELIVERED;
+        this.deliveryStatus = DeliveryStatus.DELIVERD;
         this.endDelivery = Date.from(Instant.now());
         double amount = calculateCourierPay(basicCompensation, perMinuteExtra);
 

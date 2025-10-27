@@ -3,6 +3,8 @@ package be.kdg.sa.deliveryservice.application;
 import be.kdg.sa.deliveryservice.api.dto.CompletedDeliveryDto;
 import be.kdg.sa.deliveryservice.api.dto.CourierEarningsDto;
 import be.kdg.sa.deliveryservice.domain.*;
+import be.kdg.sa.deliveryservice.infrastructure.handler.DeliveryMessagePublisher;
+import be.kdg.sa.deliveryservice.infrastructure.handler.DeliveryResponse;
 import be.kdg.sa.deliveryservice.infrastructure.handler.RestaurantResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,19 +21,30 @@ public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final CourierRepository courierRepository;
 
+    private final DeliveryMessagePublisher deliveryPublisher;
+
     @Value("${payout.standard.compensation}")
     private double basicCompensation;
 
     @Value("${payout.standard.incremental}")
     private double perMinuteExtra;
 
-    public DeliveryService(DeliveryRepository deliveryRepository, CourierRepository courierRepository) {
+    public DeliveryService(DeliveryRepository deliveryRepository, CourierRepository courierRepository, DeliveryMessagePublisher deliveryPublisher) {
         this.deliveryRepository = deliveryRepository;
         this.courierRepository = courierRepository;
+        this.deliveryPublisher = deliveryPublisher;
     }
 
     public void processAcceptedOrder(RestaurantResponse msg) {
         Delivery delivery = new Delivery(new OrderId(msg.orderId()) );
+        deliveryRepository.save(delivery);
+    }
+    public void processReadyOrder(RestaurantResponse msg) {
+        Delivery delivery = deliveryRepository.findByOrderId(msg.orderId())
+                .orElseThrow(() -> new IllegalArgumentException("Delivery not found for order: " + msg.orderId()));
+
+        delivery.readyForPickup();
+
         deliveryRepository.save(delivery);
     }
 
@@ -43,7 +56,7 @@ public class DeliveryService {
         Delivery delivery = deliveryRepository.findById(id)
                 .orElseThrow();
 
-        if(delivery.getDeliveryStatus() != DeliveryStatus.IN_ROUTE)
+        if(delivery.getDeliveryStatus() != DeliveryStatus.ACCEPTED && delivery.getDeliveryStatus()!= DeliveryStatus.PICKED_UP)
             throw new IllegalStateException("Delivery status is not accepted");
 
         if(!delivery.getCourierId().id().equals(courierId))
@@ -54,6 +67,12 @@ public class DeliveryService {
         deliveryRepository.save(delivery);
         deliveryRepository.savePayout(payout);
 
+        deliveryPublisher.sendDeliveredResponse(
+                new DeliveryResponse(
+                        delivery.getOrderId().id(),
+                        delivery.getDeliveryStatus().toString(),
+                        "Order is bezorgd")
+        );
         return delivery;
     }
 
@@ -63,7 +82,7 @@ public class DeliveryService {
         Courier courier = courierRepository.findById(courierId)
                 .orElseThrow();
 
-        if(delivery.getDeliveryStatus() != DeliveryStatus.AVAILABLE)
+        if(delivery.getDeliveryStatus() != DeliveryStatus.AVAILABLE && delivery.getDeliveryStatus()!= DeliveryStatus.PENDING_PICKUP)
             throw new IllegalStateException("Delivery status is not AVAILABLE");
 
         if(courierRepository.hasActiveDelivery(courier.getId().id()))
@@ -71,9 +90,33 @@ public class DeliveryService {
 
         delivery.assignCourier(courier.getId());
         delivery.acceptDelivery();
-        delivery.StartDelivery();
 
         deliveryRepository.save(delivery);
+
+        deliveryPublisher.sendClaimedResponse(
+                new DeliveryResponse(delivery.getOrderId().id(), delivery.getDeliveryStatus().toString(), "Een koerier heeft je order opgenomen")
+        );
+        return delivery;
+    }
+
+    public Delivery getDelivery(UUID id, UUID courierId) {
+        Delivery delivery = deliveryRepository.findById(id)
+                .orElseThrow();
+        Courier courier = courierRepository.findById(courierId)
+                .orElseThrow();
+
+        if(delivery.getDeliveryStatus()!= DeliveryStatus.PENDING_PICKUP)
+            throw new IllegalStateException("Delivery status is not AVAILABLE");
+
+        if(!delivery.getCourierId().id().equals(courier.getId().id()))
+            throw new IllegalStateException("This delivery is assigned to another courier");
+
+        delivery.pickup();
+        deliveryRepository.save(delivery);
+
+        deliveryPublisher.sendPickedUpResponse(
+                new DeliveryResponse(delivery.getOrderId().id(), delivery.getDeliveryStatus().toString(), "Order is opgepikt door courier")
+        );
         return delivery;
     }
 
