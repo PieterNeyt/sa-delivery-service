@@ -46,7 +46,7 @@ Accept: application/json
 Authorization: Bearer {{access_token2}}
 
 ### Delivery ophalen
-POST http://localhost:7070/api/delivery/{{id1}}/getDelivery
+POST http://localhost:7070/api/delivery/{{id1}}/pickup
 Accept: application/json
 Authorization: Bearer {{access_token}}
 

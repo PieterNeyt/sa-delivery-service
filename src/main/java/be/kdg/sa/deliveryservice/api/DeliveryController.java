@@ -40,9 +40,9 @@ public class DeliveryController {
         return ResponseEntity.ok(DeliveryDto.from(delivery));
     }
     @PreAuthorize("hasAuthority('courier')")
-    @PostMapping("/{id}/getDelivery")
-    public ResponseEntity<DeliveryDto> GetDelivery(@PathVariable UUID id, @AuthenticationPrincipal Jwt token) {
-        Delivery delivery = deliveryService.getDelivery(id,getIdFromToken(token));
+    @PostMapping("/{id}/pickup")
+    public ResponseEntity<DeliveryDto> PickupDelivery(@PathVariable UUID id, @AuthenticationPrincipal Jwt token) {
+        Delivery delivery = deliveryService.pickupDelivery(id,getIdFromToken(token));
         return ResponseEntity.ok(DeliveryDto.from(delivery));
     }
     @PreAuthorize("hasAuthority('courier')")

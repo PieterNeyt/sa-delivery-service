@@ -38,15 +38,15 @@ public class DeliveryService {
     }
 
     public void processAcceptedOrder(RestaurantResponse msg) {
-        Delivery delivery = new Delivery(new OrderId(msg.orderId()) );
+        Delivery delivery = new Delivery(new OrderId(msg.orderId()));
         deliveryRepository.save(delivery);
     }
+
     public void processReadyOrder(RestaurantResponse msg) {
         Delivery delivery = deliveryRepository.findByOrderId(msg.orderId())
                 .orElseThrow(() -> new IllegalArgumentException("Delivery not found for order: " + msg.orderId()));
 
         delivery.readyForPickup();
-
         deliveryRepository.save(delivery);
     }
 
@@ -58,13 +58,10 @@ public class DeliveryService {
         Delivery delivery = deliveryRepository.findById(id)
                 .orElseThrow();
 
-        if(delivery.getDeliveryStatus() != DeliveryStatus.ACCEPTED && delivery.getDeliveryStatus()!= DeliveryStatus.PICKED_UP)
-            throw new IllegalStateException("Delivery status is not accepted");
-
-        if(!delivery.getCourierId().id().equals(courierId))
+        if (!delivery.getCourierId().id().equals(courierId))
             throw new IllegalStateException("This delivery is assigned to another courier");
 
-        Payout payout = delivery.completeDelivery(basicCompensation, perMinuteExtra);
+        Payout payout = delivery.complete(basicCompensation, perMinuteExtra);
 
         deliveryRepository.save(delivery);
         deliveryRepository.savePayout(payout);
@@ -84,33 +81,26 @@ public class DeliveryService {
         Courier courier = courierRepository.findById(courierId)
                 .orElseThrow();
 
-        if(delivery.getDeliveryStatus() != DeliveryStatus.AVAILABLE && delivery.getDeliveryStatus()!= DeliveryStatus.PENDING_PICKUP)
-            throw new IllegalStateException("Delivery status is not AVAILABLE");
-
-        if(courierRepository.hasActiveDelivery(courier.getId().id()))
+        if (courierRepository.hasActiveDelivery(courier.getId().id()))
             throw new IllegalStateException("courier already has a active delivery");
 
-        delivery.assignCourier(courier.getId());
-        delivery.acceptDelivery();
+        delivery.claimByCourier(courier.getId());
 
         deliveryRepository.save(delivery);
-
         deliveryPublisher.sendClaimedResponse(
                 new DeliveryResponse(delivery.getOrderId().id(), delivery.getDeliveryStatus().toString(), "Een koerier heeft je order opgenomen")
         );
+
         return delivery;
     }
 
-    public Delivery getDelivery(UUID id, UUID courierId) {
+    public Delivery pickupDelivery(UUID id, UUID courierId) {
         Delivery delivery = deliveryRepository.findById(id)
                 .orElseThrow();
         Courier courier = courierRepository.findById(courierId)
                 .orElseThrow();
 
-        if(delivery.getDeliveryStatus()!= DeliveryStatus.PENDING_PICKUP)
-            throw new IllegalStateException("Delivery status is not AVAILABLE");
-
-        if(!delivery.getCourierId().id().equals(courier.getId().id()))
+        if (!delivery.getCourierId().id().equals(courier.getId().id()))
             throw new IllegalStateException("This delivery is assigned to another courier");
 
         delivery.pickup();
@@ -129,7 +119,7 @@ public class DeliveryService {
         if (!delivery.getCourierId().id().equals(courierId))
             throw new IllegalStateException("Delivery doesn't belong to courier");
 
-        delivery.cancelDelivery();
+        delivery.cancel();
 
         deliveryRepository.save(delivery);
         return delivery;

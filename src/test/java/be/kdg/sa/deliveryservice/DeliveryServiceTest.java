@@ -103,7 +103,7 @@ class DeliveryServiceTest {
 
     @Test
     void claimDelivery_throwsIfNotAvailable() {
-        delivery.acceptDelivery(); // status != AVAILABLE
+        delivery.claimByCourier(new CourierId(courierUuid));
         when(deliveryRepository.findById(any())).thenReturn(Optional.of(delivery));
         when(courierRepository.findById(any())).thenReturn(Optional.of(courier));
 
@@ -114,8 +114,8 @@ class DeliveryServiceTest {
 
     @Test
     void completeDelivery_savesAndPublishes() {
-        delivery.assignCourier(new CourierId(courierUuid));
-        delivery.acceptDelivery();
+
+        delivery.claimByCourier(new CourierId(courierUuid));
         delivery.pickup();
         when(deliveryRepository.findById(delivery.getDeliveryId().id()))
                 .thenReturn(Optional.of(delivery));
@@ -129,8 +129,7 @@ class DeliveryServiceTest {
 
     @Test
     void completeDelivery_throwsIfOtherCourier() {
-        delivery.assignCourier(new CourierId(UUID.randomUUID()));
-        delivery.acceptDelivery();
+        delivery.claimByCourier(new CourierId(UUID.randomUUID()));
         when(deliveryRepository.findById(any())).thenReturn(Optional.of(delivery));
 
         assertThatThrownBy(() ->
@@ -141,8 +140,7 @@ class DeliveryServiceTest {
 
     @Test
     void cancelClaimDelivery_resetsDelivery() {
-        delivery.assignCourier(new CourierId(courierUuid));
-        delivery.acceptDelivery();
+        delivery.claimByCourier( new CourierId(courierUuid));
         when(deliveryRepository.findById(delivery.getDeliveryId().id()))
                 .thenReturn(Optional.of(delivery));
 

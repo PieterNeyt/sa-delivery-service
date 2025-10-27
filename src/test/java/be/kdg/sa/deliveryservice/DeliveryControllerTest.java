@@ -13,12 +13,10 @@ import be.kdg.sa.deliveryservice.domain.delivery.Delivery;
 import be.kdg.sa.deliveryservice.domain.delivery.DeliveryId;
 import be.kdg.sa.deliveryservice.domain.delivery.DeliveryStatus;
 import be.kdg.sa.deliveryservice.domain.delivery.OrderId;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -107,7 +105,7 @@ class DeliveryControllerTest {
                 DeliveryStatus.ACCEPTED
         );
 
-        when(deliveryService.getDelivery(deliveryId, courierId)).thenReturn(delivery);
+        when(deliveryService.pickupDelivery(deliveryId, courierId)).thenReturn(delivery);
 
         Jwt jwt = mock(Jwt.class);
         when(jwt.getClaimAsString("sub")).thenReturn(courierId.toString());
@@ -118,7 +116,7 @@ class DeliveryControllerTest {
         // Assert
         assertNotNull(response.getBody());
         assertEquals(deliveryId, response.getBody().id());
-        verify(deliveryService).getDelivery(deliveryId, courierId);
+        verify(deliveryService).pickupDelivery(deliveryId, courierId);
     }
 
     @Test

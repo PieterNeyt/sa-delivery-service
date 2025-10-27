@@ -41,26 +41,16 @@ public class Delivery {
         this.deliveryStatus = deliveryStatus;
     }
 
-
-    private double calculateCourierPay(double basicCompansation, double perMinuteExtra){
-
-        this.endDelivery = Date.from(Instant.now());
-
-        long deliveryTime = endDelivery.getTime() - startDelivery.getTime();
-        long deliveryTimeInMinutes = TimeUnit.MILLISECONDS.toMinutes(deliveryTime);
-
-        if(deliveryTimeInMinutes <= 5)
-            return basicCompansation;
-
-        return basicCompansation + (perMinuteExtra * deliveryTimeInMinutes);
+    private double calculateCourierPay(double basicCompansation, double perMinuteExtra, long durationInMinutes) {
+        return durationInMinutes <= 5 ? basicCompansation : basicCompansation + perMinuteExtra * durationInMinutes;
     }
 
-    public void assignCourier(CourierId courierId) {
+
+    public void claimByCourier(CourierId courierId) {
+        if(this.deliveryStatus != DeliveryStatus.AVAILABLE)
+            throw new IllegalStateException("Delivery status is not AVAILABLE");
+
         this.courierId = courierId;
-    }
-
-
-    public void acceptDelivery() {
         this.deliveryStatus= DeliveryStatus.ACCEPTED;
     }
 
@@ -68,19 +58,29 @@ public class Delivery {
         this.deliveryStatus= DeliveryStatus.PENDING_PICKUP;
     }
     public void pickup() {
+        if(this.deliveryStatus!= DeliveryStatus.PENDING_PICKUP)
+            throw new IllegalStateException("Delivery is not pending pickup");
+
+
         this.deliveryStatus= DeliveryStatus.PICKED_UP;
         this.startDelivery = Date.from(Instant.now());
     }
 
-    public Payout completeDelivery(double basicCompensation, double perMinuteExtra) {
+    public Payout complete(double basicCompensation, double perMinuteExtra) {
+
+        if(this.deliveryStatus!= DeliveryStatus.PICKED_UP)
+            throw new IllegalStateException("Delivery status is not in route");
+
         this.deliveryStatus = DeliveryStatus.DELIVERD;
         this.endDelivery = Date.from(Instant.now());
-        double amount = calculateCourierPay(basicCompensation, perMinuteExtra);
+
+        long duration = TimeUnit.MILLISECONDS.toMinutes(endDelivery.getTime() - startDelivery.getTime());
+        double amount = calculateCourierPay(basicCompensation, perMinuteExtra, duration);
 
         return new Payout(this.courierId, this.deliveryId, amount);
     }
 
-    public void cancelDelivery() {
+    public void cancel() {
         if(deliveryStatus != DeliveryStatus.ACCEPTED)
             throw new IllegalStateException("Delivery is already ready for pick, you have to finish the delivery");
 
