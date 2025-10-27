@@ -1,9 +1,9 @@
 package be.kdg.sa.deliveryservice.infrastructure.jpa;
 
-import be.kdg.sa.deliveryservice.domain.CourierId;
-import be.kdg.sa.deliveryservice.domain.DeliveryId;
-import be.kdg.sa.deliveryservice.domain.Payout;
-import be.kdg.sa.deliveryservice.domain.PayoutId;
+import be.kdg.sa.deliveryservice.domain.courier.CourierId;
+import be.kdg.sa.deliveryservice.domain.delivery.DeliveryId;
+import be.kdg.sa.deliveryservice.domain.payout.Payout;
+import be.kdg.sa.deliveryservice.domain.payout.PayoutId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

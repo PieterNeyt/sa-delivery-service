@@ -1,4 +1,6 @@
-package be.kdg.sa.deliveryservice.domain;
+package be.kdg.sa.deliveryservice.domain.delivery;
+
+import be.kdg.sa.deliveryservice.domain.payout.Payout;
 
 import java.util.List;
 import java.util.Optional;

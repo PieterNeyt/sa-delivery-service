@@ -1,12 +1,12 @@
 package be.kdg.sa.deliveryservice.infrastructure.handler;
 
-import be.kdg.sa.deliveryservice.infrastructure.config.RabbitMQTopology;
+import be.kdg.sa.deliveryservice.domain.delivery.IDeliveryMessagePublisher;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DeliveryMessagePublisher {
+public class DeliveryMessagePublisher implements IDeliveryMessagePublisher {
 
     private final RabbitTemplate rabbitTemplate;
 

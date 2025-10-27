@@ -1,12 +1,12 @@
-package be.kdg.sa.deliveryservice.domain;
+package be.kdg.sa.deliveryservice.domain.delivery;
 
 
+import be.kdg.sa.deliveryservice.domain.courier.CourierId;
+import be.kdg.sa.deliveryservice.domain.payout.Payout;
 import lombok.Getter;
 import lombok.ToString;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.Assert;
 
 import java.time.Instant;
 import java.util.Date;

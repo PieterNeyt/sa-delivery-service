@@ -1,5 +1,7 @@
-package be.kdg.sa.deliveryservice.domain;
+package be.kdg.sa.deliveryservice.domain.payout;
 
+import be.kdg.sa.deliveryservice.domain.courier.CourierId;
+import be.kdg.sa.deliveryservice.domain.delivery.DeliveryId;
 import lombok.Getter;
 import org.jmolecules.ddd.annotation.Entity;
 import org.jmolecules.ddd.annotation.Identity;

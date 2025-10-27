@@ -1,7 +1,7 @@
 package be.kdg.sa.deliveryservice.infrastructure;
 
 import be.kdg.sa.deliveryservice.application.CourierRepository;
-import be.kdg.sa.deliveryservice.domain.Courier;
+import be.kdg.sa.deliveryservice.domain.courier.Courier;
 import be.kdg.sa.deliveryservice.infrastructure.jpa.JpaCourierEntity;
 import be.kdg.sa.deliveryservice.infrastructure.jpa.JpaCourierRepository;
 import org.springframework.stereotype.Repository;

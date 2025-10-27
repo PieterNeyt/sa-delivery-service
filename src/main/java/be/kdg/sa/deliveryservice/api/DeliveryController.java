@@ -3,7 +3,7 @@ package be.kdg.sa.deliveryservice.api;
 import be.kdg.sa.deliveryservice.api.dto.CourierEarningsDto;
 import be.kdg.sa.deliveryservice.api.dto.DeliveryDto;
 import be.kdg.sa.deliveryservice.application.DeliveryService;
-import be.kdg.sa.deliveryservice.domain.Delivery;
+import be.kdg.sa.deliveryservice.domain.delivery.Delivery;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

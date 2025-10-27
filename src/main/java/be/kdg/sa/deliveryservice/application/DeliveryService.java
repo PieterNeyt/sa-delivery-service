@@ -2,7 +2,9 @@ package be.kdg.sa.deliveryservice.application;
 
 import be.kdg.sa.deliveryservice.api.dto.CompletedDeliveryDto;
 import be.kdg.sa.deliveryservice.api.dto.CourierEarningsDto;
-import be.kdg.sa.deliveryservice.domain.*;
+import be.kdg.sa.deliveryservice.domain.courier.Courier;
+import be.kdg.sa.deliveryservice.domain.delivery.*;
+import be.kdg.sa.deliveryservice.domain.payout.Payout;
 import be.kdg.sa.deliveryservice.infrastructure.handler.DeliveryMessagePublisher;
 import be.kdg.sa.deliveryservice.infrastructure.handler.DeliveryResponse;
 import be.kdg.sa.deliveryservice.infrastructure.handler.RestaurantResponse;
@@ -21,7 +23,7 @@ public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final CourierRepository courierRepository;
 
-    private final DeliveryMessagePublisher deliveryPublisher;
+    private final IDeliveryMessagePublisher deliveryPublisher;
 
     @Value("${payout.standard.compensation}")
     private double basicCompensation;

@@ -1,6 +1,6 @@
 package be.kdg.sa.deliveryservice.api.dto;
 
-import be.kdg.sa.deliveryservice.domain.Courier;
+import be.kdg.sa.deliveryservice.domain.courier.Courier;
 
 import java.util.UUID;
 

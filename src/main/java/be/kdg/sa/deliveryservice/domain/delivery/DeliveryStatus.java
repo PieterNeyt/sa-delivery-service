@@ -1,4 +1,4 @@
-package be.kdg.sa.deliveryservice.domain;
+package be.kdg.sa.deliveryservice.domain.delivery;
 
 
 import lombok.Getter;

@@ -1,9 +1,9 @@
 package be.kdg.sa.deliveryservice.infrastructure;
 
-import be.kdg.sa.deliveryservice.domain.Delivery;
-import be.kdg.sa.deliveryservice.domain.DeliveryRepository;
-import be.kdg.sa.deliveryservice.domain.DeliveryStatus;
-import be.kdg.sa.deliveryservice.domain.Payout;
+import be.kdg.sa.deliveryservice.domain.delivery.Delivery;
+import be.kdg.sa.deliveryservice.domain.delivery.DeliveryRepository;
+import be.kdg.sa.deliveryservice.domain.delivery.DeliveryStatus;
+import be.kdg.sa.deliveryservice.domain.payout.Payout;
 import be.kdg.sa.deliveryservice.infrastructure.jpa.JpaDeliveryEntity;
 import be.kdg.sa.deliveryservice.infrastructure.jpa.JpaDeliveryRepository;
 import be.kdg.sa.deliveryservice.infrastructure.jpa.JpaPayoutEntity;

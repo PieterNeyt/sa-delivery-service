@@ -1,7 +1,7 @@
 package be.kdg.sa.deliveryservice.api.dto;
 
-import be.kdg.sa.deliveryservice.domain.Delivery;
-import be.kdg.sa.deliveryservice.domain.DeliveryStatus;
+import be.kdg.sa.deliveryservice.domain.delivery.Delivery;
+import be.kdg.sa.deliveryservice.domain.delivery.DeliveryStatus;
 
 import java.util.Date;
 import java.util.UUID;
