@@ -19,28 +19,25 @@ import java.util.UUID;
 public class DbDeliveryRepository implements DeliveryRepository {
     private final JpaDeliveryRepository jpaDeliveryRepository;
 
-    public DbDeliveryRepository(JpaDeliveryRepository jpaDeliveryRepository, JpaPayoutRepository jpaPayoutRepository) {
+    public DbDeliveryRepository(JpaDeliveryRepository jpaDeliveryRepository) {
         this.jpaDeliveryRepository = jpaDeliveryRepository;
     }
 
     @Override
     public List<Delivery> findAllAvailableDeliveries() {
-        return this.jpaDeliveryRepository.findAll().stream()
-                .filter(d -> d.getDeliveryStatus() == DeliveryStatus.AVAILABLE)
-                .map(JpaDeliveryEntity::toDomain)
-                .toList();
+        return this.jpaDeliveryRepository.findByDeliveryStatus(DeliveryStatus.AVAILABLE).stream()
+                .map(JpaDeliveryEntity::toDomain).toList();
     }
 
     @Override
     public Optional<Delivery> findById(UUID id) {
-        return this.jpaDeliveryRepository.findById(id).map(JpaDeliveryEntity::toDomain);
+        return this.jpaDeliveryRepository.findById(id)
+                .map(JpaDeliveryEntity::toDomain);
     }
 
     @Override
     public Optional<Delivery> findByOrderId(UUID orderId) {
-        return this.jpaDeliveryRepository.findAll().stream()
-                .filter(d -> d.getOrderId().equals(orderId))
-                .findFirst()
+        return this.jpaDeliveryRepository.findByOrderId(orderId)
                 .map(JpaDeliveryEntity::toDomain);
     }
 
@@ -51,16 +48,10 @@ public class DbDeliveryRepository implements DeliveryRepository {
     }
 
 
-
     @Override
     public List<Delivery> findCompletedDeliveriesByCourier(UUID courierId) {
-        return jpaDeliveryRepository.findAll().stream()
-                .filter(d -> d.getDeliveryStatus() == DeliveryStatus.DELIVERD)
-                .filter(d -> d.getCourierId() != null && d.getCourierId().equals(courierId))
-                .map(JpaDeliveryEntity::toDomain)
-                .toList();
+        return this.jpaDeliveryRepository.findByCourierIdAndDeliveryStatus(courierId, DeliveryStatus.DELIVERD)
+                .stream().map(JpaDeliveryEntity::toDomain).toList();
     }
-
-
 
 }
