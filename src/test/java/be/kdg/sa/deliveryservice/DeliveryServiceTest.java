@@ -3,7 +3,7 @@ package be.kdg.sa.deliveryservice;
 
 import be.kdg.sa.deliveryservice.api.dto.CompletedDeliveryDto;
 import be.kdg.sa.deliveryservice.api.dto.CourierEarningsDto;
-import be.kdg.sa.deliveryservice.application.CourierRepository;
+import be.kdg.sa.deliveryservice.domain.courier.CourierRepository;
 import be.kdg.sa.deliveryservice.application.DeliveryService;
 import be.kdg.sa.deliveryservice.domain.IPdfGenartor;
 import be.kdg.sa.deliveryservice.domain.courier.Courier;
@@ -122,7 +122,7 @@ class DeliveryServiceTest {
     void completeDelivery_savesAndPublishes() {
 
         delivery.claimByCourier(new CourierId(courierUuid));
-        delivery.pickup();
+        delivery.pickup(courierUuid);
         when(deliveryRepository.findById(delivery.getDeliveryId().id()))
                 .thenReturn(Optional.of(delivery));
 

@@ -2,8 +2,11 @@ package be.kdg.sa.deliveryservice.application;
 
 import be.kdg.sa.deliveryservice.api.dto.CompletedDeliveryDto;
 import be.kdg.sa.deliveryservice.api.dto.CourierEarningsDto;
+import be.kdg.sa.deliveryservice.domain.ActionNotPossibleException;
 import be.kdg.sa.deliveryservice.domain.IPdfGenartor;
+import be.kdg.sa.deliveryservice.domain.NotFoundException;
 import be.kdg.sa.deliveryservice.domain.courier.Courier;
+import be.kdg.sa.deliveryservice.domain.courier.CourierRepository;
 import be.kdg.sa.deliveryservice.domain.delivery.*;
 import be.kdg.sa.deliveryservice.domain.payout.Payout;
 import be.kdg.sa.deliveryservice.domain.payout.PayoutRepository;
@@ -51,7 +54,7 @@ public class DeliveryService {
 
     public void processReadyOrder(RestaurantResponse msg) {
         Delivery delivery = deliveryRepository.findByOrderId(msg.orderId())
-                .orElseThrow(() -> new IllegalArgumentException("Delivery not found for order: " + msg.orderId()));
+                .orElseThrow(() -> new NotFoundException("Delivery not found for order: " + msg.orderId()));
 
         delivery.readyForPickup();
         deliveryRepository.save(delivery);
@@ -63,12 +66,12 @@ public class DeliveryService {
 
     public Delivery completeDelivery(UUID id, UUID courierId) {
         Delivery delivery = deliveryRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new NotFoundException("Delivery not found for courier: "+courierId));
 
         if (!delivery.getCourierId().id().equals(courierId))
-            throw new IllegalStateException("This delivery is assigned to another courier");
+            throw new ActionNotPossibleException("This delivery is assigned to another courier");
 
-        Payout payout = delivery.complete(basicCompensation, perMinuteExtra);
+        Payout payout = delivery.complete(basicCompensation, perMinuteExtra,courierId);
 
         deliveryRepository.save(delivery);
         payoutRepository.save(payout);
@@ -84,12 +87,12 @@ public class DeliveryService {
 
     public Delivery claimDelivery(UUID id, UUID courierId) {
         Delivery delivery = deliveryRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new NotFoundException("Delivery not found"));
         Courier courier = courierRepository.findById(courierId)
-                .orElseThrow();
+                .orElseThrow(() -> new NotFoundException("Delivery not found for courier: "+courierId));
 
-        if (courierRepository.hasActiveDelivery(courier.getId().id()))
-            throw new IllegalStateException("courier already has a active delivery");
+        if (courierRepository.hasActiveDelivery(courierId))
+            throw new ActionNotPossibleException("courier already has a active delivery");
 
         delivery.claimByCourier(courier.getId());
 
@@ -103,14 +106,10 @@ public class DeliveryService {
 
     public Delivery pickupDelivery(UUID id, UUID courierId) {
         Delivery delivery = deliveryRepository.findById(id)
-                .orElseThrow();
-        Courier courier = courierRepository.findById(courierId)
-                .orElseThrow();
+                .orElseThrow(() -> new NotFoundException("Delivery not found"));
 
-        if (!delivery.getCourierId().id().equals(courier.getId().id()))
-            throw new IllegalStateException("This delivery is assigned to another courier");
 
-        delivery.pickup();
+        delivery.pickup(courierId);
         deliveryRepository.save(delivery);
 
         deliveryPublisher.sendPickedUpResponse(
@@ -121,12 +120,9 @@ public class DeliveryService {
 
     public Delivery cancelClaimDelivery(UUID id, UUID courierId) {
         Delivery delivery = deliveryRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new NotFoundException("Delivery not found"));
 
-        if (!delivery.getCourierId().id().equals(courierId))
-            throw new IllegalStateException("Delivery doesn't belong to courier");
-
-        delivery.cancel();
+        delivery.cancel(courierId);
 
         deliveryRepository.save(delivery);
         return delivery;
