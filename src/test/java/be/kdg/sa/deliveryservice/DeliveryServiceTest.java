@@ -9,6 +9,7 @@ import be.kdg.sa.deliveryservice.domain.courier.Courier;
 import be.kdg.sa.deliveryservice.domain.courier.CourierId;
 import be.kdg.sa.deliveryservice.domain.delivery.*;
 import be.kdg.sa.deliveryservice.domain.payout.Payout;
+import be.kdg.sa.deliveryservice.domain.payout.PayoutRepository;
 import be.kdg.sa.deliveryservice.infrastructure.handler.DeliveryMessagePublisher;
 import be.kdg.sa.deliveryservice.infrastructure.handler.DeliveryResponse;
 import be.kdg.sa.deliveryservice.infrastructure.handler.RestaurantResponse;
@@ -31,6 +32,8 @@ class DeliveryServiceTest {
     @Mock
     private CourierRepository courierRepository;
     @Mock
+    private PayoutRepository payoutRepository;
+    @Mock
     private DeliveryMessagePublisher deliveryPublisher;
 
     @InjectMocks
@@ -52,7 +55,7 @@ class DeliveryServiceTest {
                 DeliveryStatus.AVAILABLE);
 
 
-        deliveryService = new DeliveryService(deliveryRepository, courierRepository, deliveryPublisher);
+        deliveryService = new DeliveryService(deliveryRepository, courierRepository,payoutRepository ,deliveryPublisher);
 
         TestUtils.setField(deliveryService, "basicCompensation", 5.0);
         TestUtils.setField(deliveryService, "perMinuteExtra", 0.1);
@@ -123,7 +126,7 @@ class DeliveryServiceTest {
         Delivery result = deliveryService.completeDelivery(delivery.getDeliveryId().id(), courierUuid);
 
         assertThat(result.getDeliveryStatus()).isEqualTo(DeliveryStatus.DELIVERD);
-        verify(deliveryRepository).savePayout(any(Payout.class));
+        verify(payoutRepository).save(any(Payout.class));
         verify(deliveryPublisher).sendDeliveredResponse(any(DeliveryResponse.class));
     }
 
@@ -163,7 +166,7 @@ class DeliveryServiceTest {
 
         when(deliveryRepository.findCompletedDeliveriesByCourier(courierUuid))
                 .thenReturn(List.of(d));
-        when(deliveryRepository.findPayoutsByCourier(courierUuid))
+        when(payoutRepository.findByCourierId(courierUuid))
                 .thenReturn(List.of(payout));
 
         CourierEarningsDto result = deliveryService.getCompletedDeliveriesAndPayments(courierUuid);

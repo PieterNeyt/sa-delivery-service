@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,7 +65,6 @@ public class DeliveryController {
         CourierEarningsDto dto = deliveryService.getCompletedDeliveriesAndPayments(courierId);
         return ResponseEntity.ok(dto);
     }
-
 
 
 }

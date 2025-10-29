@@ -5,6 +5,7 @@ import be.kdg.sa.deliveryservice.api.dto.CourierEarningsDto;
 import be.kdg.sa.deliveryservice.domain.courier.Courier;
 import be.kdg.sa.deliveryservice.domain.delivery.*;
 import be.kdg.sa.deliveryservice.domain.payout.Payout;
+import be.kdg.sa.deliveryservice.domain.payout.PayoutRepository;
 import be.kdg.sa.deliveryservice.infrastructure.handler.DeliveryMessagePublisher;
 import be.kdg.sa.deliveryservice.infrastructure.handler.DeliveryResponse;
 import be.kdg.sa.deliveryservice.infrastructure.handler.RestaurantResponse;
@@ -12,6 +13,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final CourierRepository courierRepository;
+    private final PayoutRepository payoutRepository;
 
     private final IDeliveryMessagePublisher deliveryPublisher;
 
@@ -31,9 +34,10 @@ public class DeliveryService {
     @Value("${payout.standard.incremental}")
     private double perMinuteExtra;
 
-    public DeliveryService(DeliveryRepository deliveryRepository, CourierRepository courierRepository, DeliveryMessagePublisher deliveryPublisher) {
+    public DeliveryService(DeliveryRepository deliveryRepository, CourierRepository courierRepository, PayoutRepository payoutRepository, DeliveryMessagePublisher deliveryPublisher) {
         this.deliveryRepository = deliveryRepository;
         this.courierRepository = courierRepository;
+        this.payoutRepository = payoutRepository;
         this.deliveryPublisher = deliveryPublisher;
     }
 
@@ -64,7 +68,7 @@ public class DeliveryService {
         Payout payout = delivery.complete(basicCompensation, perMinuteExtra);
 
         deliveryRepository.save(delivery);
-        deliveryRepository.savePayout(payout);
+        payoutRepository.save(payout);
 
         deliveryPublisher.sendDeliveredResponse(
                 new DeliveryResponse(
@@ -127,7 +131,7 @@ public class DeliveryService {
 
     public CourierEarningsDto getCompletedDeliveriesAndPayments(UUID courierId) {
         List<Delivery> deliveries = deliveryRepository.findCompletedDeliveriesByCourier(courierId);
-        List<Payout> payouts = deliveryRepository.findPayoutsByCourier(courierId);
+        List<Payout> payouts = payoutRepository.findByCourierId(courierId);
 
 
         Map<UUID, Double> payoutMap = payouts.stream()

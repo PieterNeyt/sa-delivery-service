@@ -10,6 +10,7 @@ import be.kdg.sa.deliveryservice.infrastructure.jpa.JpaPayoutEntity;
 import be.kdg.sa.deliveryservice.infrastructure.jpa.JpaPayoutRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,11 +18,9 @@ import java.util.UUID;
 @Repository
 public class DbDeliveryRepository implements DeliveryRepository {
     private final JpaDeliveryRepository jpaDeliveryRepository;
-    private final JpaPayoutRepository jpaPayoutRepository;
 
     public DbDeliveryRepository(JpaDeliveryRepository jpaDeliveryRepository, JpaPayoutRepository jpaPayoutRepository) {
         this.jpaDeliveryRepository = jpaDeliveryRepository;
-        this.jpaPayoutRepository = jpaPayoutRepository;
     }
 
     @Override
@@ -51,10 +50,7 @@ public class DbDeliveryRepository implements DeliveryRepository {
         this.jpaDeliveryRepository.save(JpaDeliveryEntity.fromDomain(delivery));
     }
 
-    @Override
-    public void savePayout(Payout payout) {
-        this.jpaPayoutRepository.save(JpaPayoutEntity.fromDomain(payout));
-    }
+
 
     @Override
     public List<Delivery> findCompletedDeliveriesByCourier(UUID courierId) {
@@ -65,13 +61,6 @@ public class DbDeliveryRepository implements DeliveryRepository {
                 .toList();
     }
 
-    @Override
-    public List<Payout> findPayoutsByCourier(UUID courierId) {
-        return jpaPayoutRepository.findAll().stream()
-                .filter(p -> p.getCourierId().equals(courierId))
-                .map(JpaPayoutEntity::toDomain)
-                .toList();
-    }
 
 
 }
