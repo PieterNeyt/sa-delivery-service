@@ -5,10 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 public interface JpaPayoutRepository extends JpaRepository<JpaPayoutEntity, UUID> {
 
-    List<Payout> findByCourierId(UUID courierId);
+    List<JpaPayoutEntity> findByCourierId(UUID courierId);
+
+    List<JpaPayoutEntity> findAllByPayoutDateBetween(Date payoutDateAfter, Date payoutDateBefore);
 }

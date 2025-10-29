@@ -2,6 +2,7 @@ package be.kdg.sa.deliveryservice.application;
 
 import be.kdg.sa.deliveryservice.api.dto.CompletedDeliveryDto;
 import be.kdg.sa.deliveryservice.api.dto.CourierEarningsDto;
+import be.kdg.sa.deliveryservice.domain.IPdfGenartor;
 import be.kdg.sa.deliveryservice.domain.courier.Courier;
 import be.kdg.sa.deliveryservice.domain.delivery.*;
 import be.kdg.sa.deliveryservice.domain.payout.Payout;
@@ -25,6 +26,7 @@ public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final CourierRepository courierRepository;
     private final PayoutRepository payoutRepository;
+    private final IPdfGenartor pdfGenartor;
 
     private final IDeliveryMessagePublisher deliveryPublisher;
 
@@ -34,10 +36,11 @@ public class DeliveryService {
     @Value("${payout.standard.incremental}")
     private double perMinuteExtra;
 
-    public DeliveryService(DeliveryRepository deliveryRepository, CourierRepository courierRepository, PayoutRepository payoutRepository, DeliveryMessagePublisher deliveryPublisher) {
+    public DeliveryService(DeliveryRepository deliveryRepository, CourierRepository courierRepository, PayoutRepository payoutRepository, IPdfGenartor pdfGenartor, DeliveryMessagePublisher deliveryPublisher) {
         this.deliveryRepository = deliveryRepository;
         this.courierRepository = courierRepository;
         this.payoutRepository = payoutRepository;
+        this.pdfGenartor = pdfGenartor;
         this.deliveryPublisher = deliveryPublisher;
     }
 
@@ -150,4 +153,8 @@ public class DeliveryService {
         return new CourierEarningsDto(dtoList, total);
     }
 
+    public byte[] GetPayoutOverview(Date startDate,Date endDate) {
+        List<Payout> payouts = payoutRepository.findAllPayoutsInBetween(startDate,endDate);
+        return pdfGenartor.generatorPayoutsOverview(payouts);
+    }
 }

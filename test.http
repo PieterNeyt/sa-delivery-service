@@ -60,3 +60,13 @@ GET http://localhost:7070/api/delivery/completed
 Authorization: Bearer {{access_token}}
 Accept: application/json
 
+###
+POST http://localhost:7070/api/delivery/GetPayoutOverview
+//Authorization: Bearer {{access_token}}
+Accept: application/json
+Content-Type: application/json
+
+{
+  "startDate": "2025-10-01T00:00:00+0000",
+  "endDate": "2025-10-29T23:59:59+0000"
+}

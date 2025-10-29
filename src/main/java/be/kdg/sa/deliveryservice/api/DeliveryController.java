@@ -2,6 +2,7 @@ package be.kdg.sa.deliveryservice.api;
 
 import be.kdg.sa.deliveryservice.api.dto.CourierEarningsDto;
 import be.kdg.sa.deliveryservice.api.dto.DeliveryDto;
+import be.kdg.sa.deliveryservice.api.dto.PayoutOverViewDto;
 import be.kdg.sa.deliveryservice.application.DeliveryService;
 import be.kdg.sa.deliveryservice.domain.delivery.Delivery;
 import org.springframework.http.ResponseEntity;
@@ -66,5 +67,13 @@ public class DeliveryController {
         return ResponseEntity.ok(dto);
     }
 
-
+    //@PreAuthorize("hasAuthority('admin')")
+    @PostMapping("/GetPayoutOverview")
+    public ResponseEntity<byte[]> GetPayoutOverview(@RequestBody PayoutOverViewDto overViewDto){
+        byte[] pdfOverview = deliveryService.GetPayoutOverview(overViewDto.startDate(),overViewDto.endDate());
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=\"payout_overview.pdf\"")
+                .header("Content-Type", "application/pdf")
+                .body(pdfOverview);
+    }
 }

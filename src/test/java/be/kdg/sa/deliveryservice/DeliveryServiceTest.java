@@ -5,6 +5,7 @@ import be.kdg.sa.deliveryservice.api.dto.CompletedDeliveryDto;
 import be.kdg.sa.deliveryservice.api.dto.CourierEarningsDto;
 import be.kdg.sa.deliveryservice.application.CourierRepository;
 import be.kdg.sa.deliveryservice.application.DeliveryService;
+import be.kdg.sa.deliveryservice.domain.IPdfGenartor;
 import be.kdg.sa.deliveryservice.domain.courier.Courier;
 import be.kdg.sa.deliveryservice.domain.courier.CourierId;
 import be.kdg.sa.deliveryservice.domain.delivery.*;
@@ -34,6 +35,8 @@ class DeliveryServiceTest {
     @Mock
     private PayoutRepository payoutRepository;
     @Mock
+    private IPdfGenartor pdfGenartor;
+    @Mock
     private DeliveryMessagePublisher deliveryPublisher;
 
     @InjectMocks
@@ -55,7 +58,7 @@ class DeliveryServiceTest {
                 DeliveryStatus.AVAILABLE);
 
 
-        deliveryService = new DeliveryService(deliveryRepository, courierRepository,payoutRepository ,deliveryPublisher);
+        deliveryService = new DeliveryService(deliveryRepository, courierRepository,payoutRepository,pdfGenartor ,deliveryPublisher);
 
         TestUtils.setField(deliveryService, "basicCompensation", 5.0);
         TestUtils.setField(deliveryService, "perMinuteExtra", 0.1);

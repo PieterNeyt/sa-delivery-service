@@ -6,6 +6,7 @@ import be.kdg.sa.deliveryservice.infrastructure.jpa.JpaPayoutEntity;
 import be.kdg.sa.deliveryservice.infrastructure.jpa.JpaPayoutRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,11 +20,16 @@ public class DbPayoutRepository implements PayoutRepository {
 
     @Override
     public List<Payout> findByCourierId(UUID courierId) {
-        return this.jpaPayoutRepository.findByCourierId(courierId);
+        return this.jpaPayoutRepository.findByCourierId(courierId).stream().map(JpaPayoutEntity::toDomain).toList();
     }
 
     @Override
     public void save(Payout payout) {
         this.jpaPayoutRepository.save(JpaPayoutEntity.fromDomain(payout));
+    }
+
+    @Override
+    public List<Payout> findAllPayoutsInBetween(Date startDate, Date endDate) {
+        return this.jpaPayoutRepository.findAllByPayoutDateBetween(startDate, endDate).stream().map(JpaPayoutEntity::toDomain).toList();
     }
 }
