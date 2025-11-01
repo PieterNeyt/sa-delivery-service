@@ -3,14 +3,10 @@ package be.kdg.sa.deliveryservice.infrastructure;
 import be.kdg.sa.deliveryservice.domain.delivery.Delivery;
 import be.kdg.sa.deliveryservice.domain.delivery.DeliveryRepository;
 import be.kdg.sa.deliveryservice.domain.delivery.DeliveryStatus;
-import be.kdg.sa.deliveryservice.domain.payout.Payout;
 import be.kdg.sa.deliveryservice.infrastructure.jpa.JpaDeliveryEntity;
 import be.kdg.sa.deliveryservice.infrastructure.jpa.JpaDeliveryRepository;
-import be.kdg.sa.deliveryservice.infrastructure.jpa.JpaPayoutEntity;
-import be.kdg.sa.deliveryservice.infrastructure.jpa.JpaPayoutRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

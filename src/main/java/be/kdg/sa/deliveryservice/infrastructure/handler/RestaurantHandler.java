@@ -1,7 +1,6 @@
 package be.kdg.sa.deliveryservice.infrastructure.handler;
 
 import be.kdg.sa.deliveryservice.application.DeliveryService;
-import be.kdg.sa.deliveryservice.infrastructure.config.RabbitMQTopology;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;

@@ -1,8 +1,5 @@
 package be.kdg.sa.deliveryservice.domain.delivery;
 
-import be.kdg.sa.deliveryservice.domain.payout.Payout;
-
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

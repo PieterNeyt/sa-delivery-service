@@ -3,12 +3,10 @@ package be.kdg.sa.deliveryservice.infrastructure.pdf;
 import be.kdg.sa.deliveryservice.domain.IPdfGenartor;
 import be.kdg.sa.deliveryservice.domain.courier.CourierId;
 import be.kdg.sa.deliveryservice.domain.payout.Payout;
-import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.LineSeparator;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
@@ -16,7 +14,6 @@ import com.itextpdf.layout.properties.UnitValue;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,7 +24,7 @@ public class PdfGenerator implements IPdfGenartor {
     @Override
     public byte[] generatorPayoutsOverview(List<Payout> payouts) {
         Map<CourierId, List<Payout>> payoutsByCourier = payouts.stream()
-                .collect(Collectors.groupingBy(Payout::getCourierId));
+                .collect(Collectors.groupingBy(Payout::courierId));
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -63,9 +60,9 @@ public class PdfGenerator implements IPdfGenartor {
             int index = 1;
             for (Payout payout : payouts) {
                 table.addCell(String.valueOf(index++));
-                table.addCell(payout.getDeliveryId().id().toString());
-                table.addCell(String.format("%.2f", payout.getAmount()));
-                table.addCell(payout.getPayoutDate().toString());
+                table.addCell(payout.deliveryId().id().toString());
+                table.addCell(String.format("%.2f", payout.amount()));
+                table.addCell(payout.payoutDate().toString());
             }
             document.add(table);
             document.add(new Paragraph("\n\n"));

@@ -10,6 +10,6 @@ public enum DeliveryStatus {
     PENDING_PICKUP,
     PICKED_UP,
     DELIVERD,
-    CANCELLED;
+    CANCELLED
 
 }

@@ -44,11 +44,11 @@ public class JpaPayoutEntity {
 
     public static JpaPayoutEntity fromDomain(Payout payout) {
         return new JpaPayoutEntity(
-                payout.getPayoutId().id(),
-                payout.getCourierId().id(),
-                payout.getDeliveryId().id(),
-                payout.getAmount(),
-                payout.getPayoutDate()
+                payout.payoutId().id(),
+                payout.courierId().id(),
+                payout.deliveryId().id(),
+                payout.amount(),
+                payout.payoutDate()
         );
     }
 

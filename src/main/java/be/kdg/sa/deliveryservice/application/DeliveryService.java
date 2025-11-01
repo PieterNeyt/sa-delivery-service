@@ -134,7 +134,7 @@ public class DeliveryService {
 
 
         Map<UUID, Double> payoutMap = payouts.stream()
-                .collect(Collectors.toMap(p -> p.getDeliveryId().id(), Payout::getAmount));
+                .collect(Collectors.toMap(p -> p.deliveryId().id(), Payout::amount));
 
         List<CompletedDeliveryDto> dtoList = deliveries.stream()
                 .map(d -> new CompletedDeliveryDto(
@@ -144,7 +144,7 @@ public class DeliveryService {
                 ))
                 .toList();
 
-        double total = payouts.stream().mapToDouble(Payout::getAmount).sum();
+        double total = payouts.stream().mapToDouble(Payout::amount).sum();
 
         return new CourierEarningsDto(dtoList, total);
     }
