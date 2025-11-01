@@ -67,7 +67,7 @@ public class DeliveryController {
         return ResponseEntity.ok(dto);
     }
 
-    //@PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('admin')")
     @PostMapping("/GetPayoutOverview")
     public ResponseEntity<byte[]> GetPayoutOverview(@RequestBody PayoutOverViewDto overViewDto){
         byte[] pdfOverview = deliveryService.GetPayoutOverview(overViewDto.startDate(),overViewDto.endDate());
