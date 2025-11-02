@@ -21,7 +21,7 @@ GET http://localhost:7070/api/delivery/available
 Accept: application/json
 
 ###Alles loopt juist
-@id1 = 576cf983-6f99-46e6-b7ea-24435db428d7
+@id1 = 9652ab1b-2e20-4150-9c82-eb875f76ed02
 
 POST http://localhost:7070/api/delivery/{{id1}}/claim
 Accept: application/json
