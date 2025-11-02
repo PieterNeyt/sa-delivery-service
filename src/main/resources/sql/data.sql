@@ -4,6 +4,8 @@
 
 INSERT INTO courier (id, first_name, last_name, email, phone_number, address, iban)
 VALUES
+    ('fc60bf4a-cf31-4dd2-b013-31505ba04777', 'Jan', 'Jansen', 'jan.jansen@example.com', '0470123456', 'Straat 1, Stad', 'BE12345678901234'),
+    ('be84759f-1718-436e-8483-0deb492e5226', 'Hugo', 'Dor', 'hugo.dor@example.com', '0495658992', 'Straat 2, Wilrijk', 'BE343456789876434'),
     ('11111111-1111-1111-1111-111111111111', 'Jan', 'Peeters', 'jan.peeters@example.com', '+32471123456', 'Kerkstraat 12, Antwerpen', 'BE68539007547034'),
     ('22222222-2222-2222-2222-222222222222', 'Sara', 'De Smet', 'sara.desmet@example.com', '+32472123456', 'Stationsstraat 45, Gent', 'BE14008220844602'),
     ('33333333-3333-3333-3333-333333333333', 'Mohamed', 'El Amrani', 'mo.elamrani@example.com', '+32473123456', 'Meir 99, Antwerpen', 'BE62510007547012'),

@@ -21,7 +21,7 @@ GET http://localhost:7070/api/delivery/available
 Accept: application/json
 
 ###Alles loopt juist
-@id1 = 20a72e49-f5ad-4ee5-9728-ee3aa0e2d0d6
+@id1 = 576cf983-6f99-46e6-b7ea-24435db428d7
 
 POST http://localhost:7070/api/delivery/{{id1}}/claim
 Accept: application/json
@@ -61,8 +61,18 @@ Authorization: Bearer {{access_token}}
 Accept: application/json
 
 ###
+
+### haal admin acces token op
+POST http://localhost:8180/realms/keepdishesgoing/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=backend-client&client_secret=NHhC580gogEpJ5K9fqsiyLiqF4VpqTKE&username=admin&password=password&grant_type=password&scope=openid
+
+> {% client.global.set("access_token_admin", response.body.access_token); %}
+
+###
 POST http://localhost:7070/api/delivery/GetPayoutOverview
-Authorization: Bearer {{access_token}}
+Authorization: Bearer {{access_token_admin}}
 Accept: application/json
 Content-Type: application/json
 
